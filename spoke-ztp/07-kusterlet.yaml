@@ -1,20 +1,20 @@
 ---
-apiVersion: cluster.open-cluster-management.io/v1
-kind: ManagedCluster
-metadata:
-  name: sno-ztp-cluster
-  namespace: sno-ztp
-spec:
-  hubAcceptsClient: true
----
+# apiVersion: cluster.open-cluster-management.io/v1
+# kind: ManagedCluster
+# metadata:
+#   name: sno-ztp-cluster
+#   namespace: sno-ztp-cluster
+# spec:
+#   hubAcceptsClient: true
+# ---
 apiVersion: agent.open-cluster-management.io/v1
 kind: KlusterletAddonConfig
 metadata:
-  name: lab-spoke-adetalhouet
-  namespace: sno-ztp
+  name: sno-ztp-cluster
+  namespace: sno-ztp-cluster
 spec:
   clusterName: sno-ztp-cluster
-  clusterNamespace: sno-ztp
+  clusterNamespace: sno-ztp-cluster
   clusterLabels:
     cloud: auto-detect
     vendor: auto-detect
@@ -27,4 +27,8 @@ spec:
   policyController:
     enabled: true
   searchCollector:
-    enabled: false
+    enabled: true
+  observabilityController:
+      enabled: true
+  workManager:
+      enabled: true
