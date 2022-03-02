@@ -30,7 +30,8 @@ spec:
       requests:
         storage: 40Gi
   osImages:
-    - openshiftVersion: "4.8"
-      version: "48.84.202107202156-0"
-      url: "https://mirror.openshift.com/pub/openshift-v4/dependencies/rhcos/4.8/4.8.2/rhcos-4.8.2-x86_64-live.x86_64.iso"
-      rootFSUrl: "https://mirror.openshift.com/pub/openshift-v4/dependencies/rhcos/4.8/4.8.2/rhcos-4.8.2-x86_64-live-rootfs.x86_64.img"
+    - openshiftVersion: "4.9"
+      version: "49.83.202103251640-0"
+      url: "https://mirror.openshift.com/pub/openshift-v4/dependencies/rhcos/4.9/4.9.0/rhcos-4.9.0-x86_64-live.x86_64.iso"
+      rootFSUrl: "https://mirror.openshift.com/pub/openshift-v4/dependencies/rhcos/4.9/4.9.0/rhcos-live-rootfs.x86_64.img"
+      cpuArchitecture: "x86_64"

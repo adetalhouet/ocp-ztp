@@ -8,17 +8,17 @@ metadata:
     infraenvs.agent-install.openshift.io: "sno-ztp-infraenv"
   annotations:
     inspect.metal3.io: disabled
-    bmac.agent-install.openshift.io/hostname: "sno-pub"
+    bmac.agent-install.openshift.io/hostname: "ca-calgary-node1"
 spec:
   online: true
   # userData:
   #   name: bmh-userdata
   #   namespace: sno-ztp
   bmc:
-    address: redfish-virtualmedia+http://148.251.12.17:8000/redfish/v1/Systems/b6c92bbb-1e87-4972-b17a-12def3948891
+    address: redfish-virtualmedia+http://10.0.0.249:8000/redfish/v1/Systems/8d3aa3a9-b994-4bc6-bd06-9ddd2e59e3a9
     credentialsName: sno-secret
     disableCertificateVerification: true
-  bootMACAddress: 00:50:56:01:15:94
+  bootMACAddress: 52:54:00:8e:b3:fd
   automatedCleaningMode: disabled
 ---
 # dummy secret - it is not used by required by assisted service and bare metal operator

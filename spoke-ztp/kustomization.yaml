@@ -6,7 +6,7 @@ resources:
   - 00-namespace.yaml
   - 01-agentclusterinstall.yaml
   - 02-clusterdeployment.yaml
-  - 03-nmstateconfig.yaml
+  # - 03-nmstateconfig.yaml
   - 04-spokeinfraenv.yaml
   - 05-baremetalhost.yaml
   # - 05-userdata.yaml

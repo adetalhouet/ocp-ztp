@@ -228,7 +228,7 @@ After=syslog.target
 Type=simple
 ExecStart=/usr/local/bin/sushy-emulator --config /etc/sushy.conf
 StandardOutput=syslog
-StandardError=syslog' > /usr/lib/systemd/system/sushy.service'
+StandardError=syslog' > /usr/lib/systemd/system/sushy.service
 systemctl start sushy
 ~~~
 
@@ -237,6 +237,7 @@ Finally, let's start the built-in firewall and allow traffic on port 8000.
 ~~~
 systemctl start firewalld
 firewall-cmd --add-port=8000/tcp
+firewall-cmd --add-port=8000/tcp --zone libvirt
 ~~~
 
 ### Libvirt setup <a name="libvirtsetup"></a>
@@ -992,3 +993,8 @@ https://www.cyberciti.biz/faq/how-to-install-kvm-on-centos-8-headless-server/
 https://wiki.libvirt.org/page/Networking#Forwarding_Incoming_Connections
 
 https://www.itix.fr/blog/deploy-openshift-single-node-in-kvm/
+
+~~~
+oc patch provisioning provisioning-configuration --type merge -p '{"spec":{"watchAllNamespaces": true}}'
+oc patch hiveconfig hive --type merge -p '{"spec":{"targetNamespace":"hive","logLevel":"debug","featureGates":{"custom":{"enabled":["AlphaAgentInstallStrategy"]},"featureSet":"Custom"}}}'
+~~~

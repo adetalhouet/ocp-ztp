@@ -19,6 +19,6 @@ spec:
     agentBareMetal:
       agentSelector:
         matchLabels:
-          deploy-mode: "ztp"
+          deploy-mode: "manual"
   pullSecretRef:
     name: assisted-deployment-pull-secret

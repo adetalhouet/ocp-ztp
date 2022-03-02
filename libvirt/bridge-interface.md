@@ -21,16 +21,13 @@ IPADDR=148.251.12.17
 PREFIX=32
 GATEWAY=148.251.12.1
 IPV6_DISABLED=yes
-DOMAIN=lab.adetalhouet
 ~~~
 
 ~~~
 $ cat /etc/sysconfig/network-scripts/ifcfg-bridge-slave-enp4s0
+TYPE=Ethernet
+NAME=bridge-slave-enp4s0
 DEVICE=enp4s0
 ONBOOT=yes
-BOOTPROTO=none
-IPADDR=148.251.12.17
-PREFIX=32
-GATEWAY=148.251.12.1
-DEFROUTE=yes
+BRIDGE=br0
 ~~~

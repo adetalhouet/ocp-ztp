@@ -8,7 +8,7 @@ spec:
   clusterDeploymentRef:
     name: lab-cluster
   imageSetRef:
-    name: openshift-v4.8.0
+    name: openshift-v4.8.10
   networking:
     clusterNetwork:
       - cidr: "10.128.0.0/14"

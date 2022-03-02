@@ -1,14 +1,13 @@
 <domain type="kvm">
-  <name>sno</name>
-  <uuid>b6c92bbb-1e87-4972-b17a-12def3948890</uuid>
+  <name>node1</name>
   <metadata>
     <libosinfo:libosinfo xmlns:libosinfo="http://libosinfo.org/xmlns/libvirt/domain/1.0">
       <libosinfo:os id="http://fedoraproject.org/coreos/stable"/>
     </libosinfo:libosinfo>
   </metadata>
-  <memory>33554432</memory>
-  <currentMemory>33554432</currentMemory>
-  <vcpu>16</vcpu>
+  <memory>16777216</memory>
+  <currentMemory>16777216</currentMemory>
+  <vcpu>8</vcpu>
   <os>
     <type arch="x86_64" machine="q35">hvm</type>
     <boot dev="hd"/>
@@ -34,15 +33,20 @@
   </pm>
   <devices>
     <emulator>/usr/libexec/qemu-kvm</emulator>
+    <disk type='file' device='cdrom'>
+      <driver name='qemu' type='raw'/>
+      <source file='/var/lib/libvirt/boot/discovery_image_ocp-ai-hetzner.iso' index='1'/>
+      <target dev='sda' bus='sata'/>
+      <readonly/>
+    </disk>
     <disk type="file" device="disk">
       <driver name="qemu" type="qcow2"/>
-      <source file="/var/lib/libvirt/sno-ztp/sno.qcow2"/>
+      <source file="/var/lib/libvirt/images/node1-qcow2"/>
       <target dev="vda" bus="virtio"/>
     </disk>
     <controller type="usb" index="0" model="qemu-xhci" ports="15"/>
     <interface type="network">
-      <source network="sno"/>
-      <mac address="02:04:00:00:00:66"/>
+      <source network="default"/>
       <model type="virtio"/>
     </interface>
     <console type="pty"/>

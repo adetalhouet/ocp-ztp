@@ -34,20 +34,26 @@
   </pm>
   <devices>
     <emulator>/usr/libexec/qemu-kvm</emulator>
+    <disk type='file' device='cdrom'>
+      <driver name='qemu' type='raw'/>
+      <source file='/var/lib/libvirt/boot/discovery_image_fi-helsinki.iso' index='1'/>
+      <target dev='sda' bus='sata'/>
+      <readonly/>
+    </disk>
     <disk type="file" device="disk">
       <driver name="qemu" type="qcow2"/>
-      <source file="/var/lib/libvirt/sno-ztp/sno-pub.qcow2"/>
+      <source file="/var/lib/libvirt/sno-ztp/sno.qcow2"/>
       <target dev="vda" bus="virtio"/>
     </disk>
     <controller type="usb" index="0" model="qemu-xhci" ports="15"/>
    <interface type='bridge'>
-      <mac address='52:54:00:9a:c9:22'/>
+      <mac address='00:50:56:01:15:94'/>
       <source bridge='br0'/>
       <model type='virtio'/>
       <alias name='net0'/>
     </interface>
     <interface type="network">
-      <source network="sno"/>
+      <source network="default"/>
       <model type="virtio"/>
     </interface>
     <console type="pty"/>
