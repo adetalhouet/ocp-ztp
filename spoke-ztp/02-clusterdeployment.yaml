@@ -5,8 +5,8 @@ metadata:
   name: sno-ztp-cluster
   namespace: sno-ztp
 spec:
-  baseDomain: rhtelco.io
-  clusterName: lab-spoke-adetalhouet
+  baseDomain: adetalhouet.ca
+  clusterName: ca-calgary
   controlPlaneConfig:
     servingCertificates: {}
   installed: false
