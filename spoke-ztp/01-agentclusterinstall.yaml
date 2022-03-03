@@ -2,13 +2,15 @@
 apiVersion: extensions.hive.openshift.io/v1beta1
 kind: AgentClusterInstall
 metadata:
-  name: sno-ztp-clusteragent
-  namespace: sno-ztp
+  name: ca-montreal
+  namespace: ca-montreal
+  label:
+    agentclusterinstalls.extensions.hive.openshift.io/location: Montreal
 spec:
   clusterDeploymentRef:
-    name: sno-ztp-cluster
+    name: ca-montreal
   imageSetRef:
-    name: img4.9.9-x86-64-appsub
+    name: img4.9.23-x86-64-appsub
   networking:
     clusterNetwork:
       - cidr: "10.128.0.0/14"

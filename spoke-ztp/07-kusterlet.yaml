@@ -2,33 +2,32 @@
 apiVersion: cluster.open-cluster-management.io/v1
 kind: ManagedCluster
 metadata:
-  name: sno-ztp-cluster
-  namespace: sno-ztp-cluster
+  labels:
+    cloud: hybrid
+    name: ca-montreal
+  name: ca-montreal
 spec:
   hubAcceptsClient: true
 ---
 apiVersion: agent.open-cluster-management.io/v1
 kind: KlusterletAddonConfig
 metadata:
-  name: sno-ztp-cluster
-  namespace: sno-ztp-cluster
+  name: ca-montreal
+  namespace: ca-montreal
 spec:
-  clusterName: sno-ztp-cluster
-  clusterNamespace: sno-ztp-cluster
+  clusterName: ca-montreal
+  clusterNamespace: ca-montreal
   clusterLabels:
-    cloud: auto-detect
-    vendor: auto-detect
+    cloud: hybrid
   applicationManager:
-    enabled: true
-  certPolicyController:
-    enabled: true
-  iamPolicyController:
     enabled: true
   policyController:
     enabled: true
   searchCollector:
     enabled: true
+  certPolicyController:
+    enabled: true
   observabilityController:
       enabled: true
-  workManager:
-      enabled: true
+  iamPolicyController:
+    enabled: true

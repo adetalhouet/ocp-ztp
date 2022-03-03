@@ -2,23 +2,22 @@
 apiVersion: hive.openshift.io/v1
 kind: ClusterDeployment
 metadata:
-  name: sno-ztp-cluster
-  namespace: sno-ztp
+  annotations:
+    agentclusterinstalls.extensions.hive.openshift.io/location: Montreal
+  name: ca-montreal
+  namespace: ca-montreal
 spec:
+  clusterName: ca-montreal
   baseDomain: adetalhouet.ca
-  clusterName: ca-calgary
-  controlPlaneConfig:
-    servingCertificates: {}
-  installed: false
   clusterInstallRef:
     group: extensions.hive.openshift.io
     kind: AgentClusterInstall
-    name: sno-ztp-clusteragent
+    name: ca-montreal
     version: v1beta1
   platform:
     agentBareMetal:
       agentSelector:
         matchLabels:
-          location: "eu/fi"
+          agentclusterinstalls.extensions.hive.openshift.io/location: Montreal
   pullSecretRef:
     name: assisted-deployment-pull-secret
