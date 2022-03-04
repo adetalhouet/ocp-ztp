@@ -2,8 +2,6 @@
 apiVersion: hive.openshift.io/v1
 kind: ClusterDeployment
 metadata:
-  annotations:
-    agentclusterinstalls.extensions.hive.openshift.io/location: Montreal
   name: ca-montreal
   namespace: ca-montreal
 spec:
