@@ -60,7 +60,7 @@ spec:
             - configMapRef:
                 name: ironic-bmo-configmap
         - name: mariadb
-          image: quay.io/metal3-io/ironic
+          image: quay.io/metal3-io/mariadb
           imagePullPolicy: Always
           command:
             - /bin/runmariadb
