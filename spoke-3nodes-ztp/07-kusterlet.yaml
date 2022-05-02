@@ -1,0 +1,33 @@
+---
+apiVersion: cluster.open-cluster-management.io/v1
+kind: ManagedCluster
+metadata:
+  labels:
+    cloud: hybrid
+    name: ca-regina
+  name: ca-regina
+spec:
+  hubAcceptsClient: true
+---
+apiVersion: agent.open-cluster-management.io/v1
+kind: KlusterletAddonConfig
+metadata:
+  name: ca-regina
+  namespace: ca-regina
+spec:
+  clusterName: ca-regina
+  clusterNamespace: ca-regina
+  clusterLabels:
+    cloud: hybrid
+  applicationManager:
+    enabled: true
+  policyController:
+    enabled: true
+  searchCollector:
+    enabled: true
+  certPolicyController:
+    enabled: true
+  observabilityController:
+      enabled: true
+  iamPolicyController:
+    enabled: true

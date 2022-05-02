@@ -1,0 +1,70 @@
+apiVersion: agent-install.openshift.io/v1beta1
+kind: NMStateConfig
+metadata:
+  name: ca-regina-nmstate-node1
+  namespace: ca-regina
+  labels:
+    cluster-name: ca-regina-nmstate
+spec:
+  config:
+    interfaces:
+      - name: enp1s0
+        type: ethernet
+        state: up
+        ipv4:
+          dhcp: true
+          enabled: true
+        ipv6:
+          enabled: false
+  interfaces:
+    - name: "enp1s0"
+      macAddress: "02:04:00:00:01:01"
+---
+apiVersion: agent-install.openshift.io/v1beta1
+kind: NMStateConfig
+metadata:
+  name: ca-regina-nmstate-node2
+  namespace: ca-regina
+  labels:
+    cluster-name: ca-regina-nmstate
+spec:
+  config:
+    interfaces:
+      - name: enp1s0
+        type: ethernet
+        state: up
+        ipv4:
+          dhcp: true
+          enabled: true
+        ipv6:
+          enabled: false
+  interfaces:
+    - name: "enp1s0"
+      macAddress: "02:04:00:00:01:02"
+---
+apiVersion: agent-install.openshift.io/v1beta1
+kind: NMStateConfig
+metadata:
+  name: ca-regina-nmstate-node3
+  namespace: ca-regina
+  labels:
+    cluster-name: ca-regina-nmstate
+spec:
+  config:
+    interfaces:
+      - name: enp1s0
+        type: ethernet
+        state: up
+        ipv4:
+          dhcp: true
+          enabled: true
+        ipv6:
+          enabled: false
+    # routes:
+    #   config:
+    #     - destination: 0.0.0.0/0
+    #       next-hop-address: 192.168.123.1
+    #       next-hop-interface: enp1s0
+  interfaces:
+    - name: "enp1s0"
+      macAddress: "02:04:00:00:01:03"

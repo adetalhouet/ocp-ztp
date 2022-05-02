@@ -1,0 +1,21 @@
+---
+apiVersion: hive.openshift.io/v1
+kind: ClusterDeployment
+metadata:
+  name: ca-regina
+  namespace: ca-regina
+spec:
+  clusterName: ca-regina
+  baseDomain: adetalhouet.ca
+  clusterInstallRef:
+    group: extensions.hive.openshift.io
+    kind: AgentClusterInstall
+    name: ca-regina
+    version: v1beta1
+  platform:
+    agentBareMetal:
+      agentSelector:
+        matchLabels:
+          agentclusterinstalls.extensions.hive.openshift.io/location: Montreal
+  pullSecretRef:
+    name: assisted-deployment-pull-secret

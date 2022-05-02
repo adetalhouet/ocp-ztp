@@ -1,12 +1,12 @@
-# Deploy a Single Node OpenShift on libvirt using RHACM ZTP capabilities
+# Deploy a OpenShift on libvirt using RHACM ZTP capabilities
 
-The goal is to leverage the latest capabilities from Red Hat Advanced Cluster Management (RHACM) 2.3 to deploy a Single Node OpenShift cluster using the Zero Touch Provisioning on an emulated bare metal environment.
+The goal is to leverage the latest capabilities from Red Hat Advanced Cluster Management (RHACM) 2.3+ to deploy an OpenShift cluster using the Zero Touch Provisioning on an emulated bare metal environment.
 
-The typical Zero Touch Provisioning flow is meant to work for bare metal environment; but if like me, you don't have a bare metal environment handy, or want to optimize the only server you have, that blog is for you.
+The typical Zero Touch Provisioning flow is meant to work for bare metal environment; but if like me, you don't have a bare metal environment handy, or want to optimize the only server you have, make sure to review the section "Install requirements on the hub cluster".
 
 RHACM works in a hub and spoke manner. So the goal here is to deploy a spoke from the hub cluster.
 
-The overall setup requires the following components:
+The overall setup uses the following components:
 
 - [Ironic](https://wiki.openstack.org/wiki/Ironic): It is the OpenStack bare metal provisioning tool that uses PXE or BMC to provision and turn on/off machines
 - [Metal3](https://metal3.io/): It is the Kubernetes bare metal provisioning tool. Under the hood, it uses Ironic. And above the hood, it provides an [operator](https://github.com/metal3-io/baremetal-operator) along with the CRD it supports: `BareMetalHost`
@@ -38,8 +38,8 @@ Let's align on the Zero Touch Provisioning expectation:
 
 ## Pre-requisite <a name="prerequisites"></a>
 
-- Red Hat OpenShift Container Platform __4.8__ for the hub cluster- see [here](https://access.redhat.com/documentation/en-us/openshift_container_platform/4.8/html/installing/index) on how to deploy
-- Red Hat Advanced Cluster Management __2.3__ installed on the hub cluster- see [here](https://github.com/open-cluster-management/deploy#prepare-to-deploy-open-cluster-management-instance-only-do-once) on how to deploy
+- Red Hat OpenShift Container Platform __4.8+__ for the hub cluster- see [here](https://access.redhat.com/documentation/en-us/openshift_container_platform/4.8/html/installing/index) on how to deploy
+- Red Hat Advanced Cluster Management __2.3+__ installed on the hub cluster- see [here](https://github.com/open-cluster-management/deploy#prepare-to-deploy-open-cluster-management-instance-only-do-once) on how to deploy
 - A server with at least 32GB of RAM, 8 CPUs and 120 GB of disk - this is the machine we will use for the spoke. Mine is setup with CentOS 8.4
 - Clone the git repo: `git clone https://github.com/adetalhouet/ocp-gitops`
 
@@ -59,6 +59,14 @@ The related manifest for the install are located in the `hub` folder. The main m
 We also create a `ClusterImageSet` to refer to OpenShift 4.8 version. This will be referenced by the spoke manifest to define what version of OpenShift to install.
 
 Add your private key in the `hub/03-assisted-deployment-ssh-private-key.yaml` file (use the example), and then apply the folder. The private key will be in the resulting VM, and you will use the corresponding public key to ssh, if needed.
+
+[Follow the documention to enable Central Infrastructure Management service.](https://access.redhat.com/documentation/en-us/red_hat_advanced_cluster_management_for_kubernetes/2.4/html/clusters/managing-your-clusters#enable-cim)
+
+```
+oc patch hiveconfig hive --type merge -p '{"spec":{"targetNamespace":"hive","logLevel":"debug","featureGates":{"custom":{"enabled":["AlphaAgentInstallStrategy"]},"featureSet":"Custom"}}}'
+oc patch provisioning provisioning-configuration --type merge -p '{"spec":{"watchAllNamespaces": true }}'
+oc patch provisioning provisioning-configuration --type merge -p '{"spec":{"disableVirtualMediaTLS": true }}'
+```
 
 Everything will be installed in the `open-cluster-management` namespace.
 
@@ -236,8 +244,8 @@ Finally, let's start the built-in firewall and allow traffic on port 8000.
 
 ~~~
 systemctl start firewalld
-firewall-cmd --add-port=8000/tcp
-firewall-cmd --add-port=8000/tcp --zone libvirt
+firewall-cmd --add-port=8000/tcp --permanent
+firewall-cmd --add-port=8000/tcp --zone libvirt --permanent
 ~~~
 
 ### Libvirt setup <a name="libvirtsetup"></a>
