@@ -2,15 +2,18 @@
 
 The goal is to leverage the latest capabilities from Red Hat Advanced Cluster Management (RHACM) 2.3+ to deploy an OpenShift cluster using the Zero Touch Provisioning on an emulated bare metal environment.
 
-The typical Zero Touch Provisioning flow is meant to work for bare metal environment; but if like me, you don't have a bare metal environment handy, or want to optimize the only server you have, make sure to review the section "Install requirements on the hub cluster".
+The typical Zero Touch Provisioning flow is meant to work for bare metal environment; but if like me, you don't have a bare metal environment handy, or want to optimize the only server you have, make sure to review the section "Ironic & Metal3".
 
 RHACM works in a hub and spoke manner. So the goal here is to deploy a spoke from the hub cluster.
 
 The overall setup uses the following components:
 
+- [Red Hat Advanced Cluster Management](https://www.openshift.com/products/advanced-cluster-management) (RHACM) provides the overall feature set to manage a fleet of cluster. It also provide all the foundational elements to create an [assisted service](https://github.com/openshift/assisted-service).
+
+If you do not have a baremetal cluster, you also need to deploy:
+
 - [Ironic](https://wiki.openstack.org/wiki/Ironic): It is the OpenStack bare metal provisioning tool that uses PXE or BMC to provision and turn on/off machines
 - [Metal3](https://metal3.io/): It is the Kubernetes bare metal provisioning tool. Under the hood, it uses Ironic. And above the hood, it provides an [operator](https://github.com/metal3-io/baremetal-operator) along with the CRD it supports: `BareMetalHost`
-- [Red Hat Advanced Cluster Management](https://www.openshift.com/products/advanced-cluster-management) (RHACM) provides the overall feature set to manage a fleet of cluster. It also provide all the foundational elements to create an [assisted service](https://github.com/openshift/assisted-service).
 
 Let's align on the Zero Touch Provisioning expectation:
 
@@ -85,6 +88,8 @@ $ oc get pod -n open-cluster-management -l app=assisted-service
 ~~~
 
 ### Install Ironic and Metal3 <a name="bmo"></a>
+
+The assumption is the cluster is __not__ deployed on bare metal. If that's the case skip this section.
 
 Both Ironic and Metal3 can be installed from the [baremetal-operator ](https://github.com/metal3-io/baremetal-operator) but experience has proven it is a very opinionated install, and out of the box, doesn't work in my environment, and probably will not work in yours.
 
