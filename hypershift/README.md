@@ -300,3 +300,10 @@ spec:
         image: quay.io/openshift-release-dev/ocp-release:4.10.16-x86_64
       replicas: 1
 ~~~
+
+
+# Additional details
+
+https://hypershift-docs.netlify.app/how-to/agent/create-agent-cluster/
+
+https://github.com/stolostron/hypershift-deployment-controller/blob/main/docs/provision_hypershift_clusters_by_mce.md#provision-a-hypershift-hosted-cluster-on-bare-metal
