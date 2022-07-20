@@ -1,5 +1,9 @@
 # Setup Hypershift addon and AI for MCE with ACM hub cluster
 
+Start by reading the [documentation](https://access.redhat.com/documentation/en-us/red_hat_advanced_cluster_management_for_kubernetes/2.5/html/clusters/managing-your-clusters#hosted-control-plane-intro)
+
+Bellow are the raw steps to follow.
+
 ~~~
 echo "---
 apiVersion: addon.open-cluster-management.io/v1alpha1
