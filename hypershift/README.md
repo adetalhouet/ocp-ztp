@@ -78,13 +78,18 @@ EOF
 # Setup DNS entries for hypershift cluster
 
 Points to one of the hub cluster nodes. This is for the hosted cluster API server, which is exposed through NodePort
-`api-server.hypershift-test.adetalhouet.ca.	IN	A	192.168.123.10`
+~~~
+api-server.hypershift-test.adetalhouet.ca.	IN	A	192.168.123.10
+~~~
 
 Points to one of the workers of the hypershift cluster. This is to provide ingress. Keepalived could be used with HAProxy to setup a VIP instead.
-`*.apps.hypershift-test.adetalhouet.ca.	IN	A	192.168.123.20`
+~~~
+*.apps.hypershift-test.adetalhouet.ca.	IN	A	192.168.123.20
+~~~
 
 # Create the hypershift cluster namespace
-oc create ns hypershift-test
+
+`oc create ns hypershift-test`
 
 # Create ssh and pull-secret secret
 
