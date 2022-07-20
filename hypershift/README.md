@@ -1,5 +1,6 @@
 # Setup Hypershift addon and AI for MCE on hub cluster
 
+~~~
 echo "---
 apiVersion: addon.open-cluster-management.io/v1alpha1
 kind: ManagedClusterAddOn
@@ -72,24 +73,22 @@ spec:
       rootFSUrl: "${ROOT_FS_URL}"
       cpuArchitecture: "${ARCH}"
 EOF
----
+~~~
 
 # Setup DNS entries for hypershift cluster
 
-## Points to one of the hub cluster nodes. This is for the hosted cluster API server, which is exposed through NodePort
-api-server.hypershift-test.adetalhouet.ca.	IN	A	192.168.123.10
+Points to one of the hub cluster nodes. This is for the hosted cluster API server, which is exposed through NodePort
+`api-server.hypershift-test.adetalhouet.ca.	IN	A	192.168.123.10`
 
-## Points to one of the workers of the hypershift cluster. This is to provide ingress. Keepalived could be used with HAProxy to setup a VIP instead.
-*.apps.hypershift-test.adetalhouet.ca.	IN	A	192.168.123.20
-
----
+Points to one of the workers of the hypershift cluster. This is to provide ingress. Keepalived could be used with HAProxy to setup a VIP instead.
+`*.apps.hypershift-test.adetalhouet.ca.	IN	A	192.168.123.20`
 
 # Create the hypershift cluster namespace
 oc create ns hypershift-test
 
----
 # Create ssh and pull-secret secret
 
+~~~
 export SSH_PUB_KEY=$(cat $HOME/.ssh/id_rsa.pub)
 envsubst <<"EOF" | oc apply -f -
 apiVersion: v1
@@ -106,10 +105,11 @@ oc create secret generic pull-secret \
     -n hypershift-test \
     --from-literal=.dockerconfigjson="$DOCKER_CONFIG_JSON" \
     --type=kubernetes.io/dockerconfigjson
+~~~
 
----
 # Create InfraEnv
 
+~~~
 envsubst <<"EOF" | oc apply -f -
 apiVersion: agent-install.openshift.io/v1beta1
 kind: InfraEnv
@@ -121,11 +121,11 @@ spec:
     name: pull-secret
   sshAuthorizedKey: ${SSH_PUB_KEY}
 EOF
+~~~
 
-
----
 # Create BareMetalHost consuming the above InfraEnv
 
+~~~
 apiVersion: metal3.io/v1alpha1
 kind: BareMetalHost
 metadata:
@@ -215,18 +215,18 @@ data:
   password: Ym9iCg==
   username: Ym9iCg==
 type: Opaque
-
----
+~~~
 
 # Patch Agents to approve, set role and define installation disk
 
+~~~
  oc get agents -n hypershift-test -o name | xargs oc patch -n hypershift-test -p '{"spec":{"installation_disk_id":"/dev/vda","approved":true,"role":"worker"}}' --type merge
-
----
+~~~
 
 # Create HypershiftDeployment
-# This will deploy both the control plane and the workers.
+This will deploy both the control plane and the workers.
 
+~~~
 apiVersion: cluster.open-cluster-management.io/v1alpha1
 kind: HypershiftDeployment
 metadata:
@@ -294,3 +294,4 @@ spec:
       release:
         image: quay.io/openshift-release-dev/ocp-release:4.10.16-x86_64
       replicas: 1
+~~~
