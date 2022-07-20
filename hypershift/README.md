@@ -1,4 +1,4 @@
-# Setup Hypershift addon and AI for MCE on hub cluster
+# Setup Hypershift addon and AI for MCE with ACM hub cluster
 
 ~~~
 echo "---
