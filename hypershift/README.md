@@ -263,7 +263,7 @@ spec:
       - service: APIServer
         servicePublishingStrategy:
           nodePort:
-            address: api.hypershift-test.adetalhouet.ca
+            address: api-server.hypershift-test.adetalhouet.ca
           type: NodePort
       - service: OAuthServer
         servicePublishingStrategy:
