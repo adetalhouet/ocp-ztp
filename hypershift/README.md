@@ -2,7 +2,13 @@
 
 Start by reading the [documentation](https://access.redhat.com/documentation/en-us/red_hat_advanced_cluster_management_for_kubernetes/2.5/html/clusters/managing-your-clusters#hosted-control-plane-intro)
 
-Bellow are the raw steps to follow.
+[Enable the hypershift related components on the hub cluster](https://github.com/stolostron/hypershift-deployment-controller/blob/main/docs/provision_hypershift_clusters_by_mce.md#enable-the-hosted-control-planes-related-components-on-the-hub-cluster)
+
+[Turn one of the managed clusters into the HyperShift management cluster](https://github.com/stolostron/hypershift-deployment-controller/blob/main/docs/provision_hypershift_clusters_by_mce.md#turn-one-of-the-managed-clusters-into-the-hypershift-management-cluster)
+
+In my case, I will use `local-cluster` 
+
+Below is how to create the bucket using ODF.
 
 ~~~
 echo "---
@@ -25,24 +31,36 @@ spec:
   generateBucketName: hypershift-operator-oidc-provider-bucket
   objectBucketName: obc-hypershift-operator-oidc-provider-bucket
   storageClassName: openshift-storage.noobaa.io" | oc apply -f -
+~~~
 
+Bellow is how to create the secret for hypershift consuming the bucket details
 
-mkdir -p $HOME/.aws
-touch $HOME/.aws/credentials
+~~~
+ACCESS_KEY=$(oc get secret hypershift-operator-oidc-provider-bucket -n local-cluster --template={{.data.AWS_ACCESS_KEY_ID}} | base64 -d)
+SECRET_KEY=$(oc get secret hypershift-operator-oidc-provider-bucket -n local-cluster --template={{.data.AWS_SECRET_ACCESS_KEY}} | base64 -d)
 
-# Retrieve bucket creds information and create the file
 echo "[default]
-aws_access_key_id = Vrf8cnGcl8YJMiJjeQVG
-aws_secret_access_key = nl86JkFd7djRcyJrt3Oe08AiNMtPyAD5fbRsvcqj" > $HOME/.aws/credentials
+aws_access_key_id = $ACCESS_KEY
+aws_secret_access_key = $SECRET_KEY" > $HOME/bucket-creds
 
 oc create secret generic hypershift-operator-oidc-provider-s3-credentials \
-  --from-file=credentials=$HOME/.aws/credentials \
+  --from-file=credentials=$HOME/bucket-creds \
   --from-literal=bucket=hypershift-operator-oidc-p-e8c50eb0-7df3-4f27-ac24-2a5ad714b4d7 \
   --from-literal=region=Montreal \
   -n local-cluster
 
 oc label secret hypershift-operator-oidc-provider-s3-credentials -n local-cluster cluster.open-cluster-management.io/backup=""
+~~~
 
+Patch the `provisioning` CR to watch all namespace.
+
+~~~
+oc patch provisioning provisioning-configuration --type merge -p '{"spec":{"watchAllNamespaces": true }}'
+~~~
+
+Create Assisted Installer service in MCE namespace.
+
+~~~
 export DB_VOLUME_SIZE="10Gi"
 export FS_VOLUME_SIZE="10Gi"
 export OCP_VERSION="4.10"
@@ -79,23 +97,24 @@ spec:
 EOF
 ~~~
 
-# Setup DNS entries for hypershift cluster
+Setup DNS entries for hypershift cluster. Example with named configuration.
 
-Points to one of the hub cluster nodes. This is for the hosted cluster API server, which is exposed through NodePort
+Two records are required for the hypershift cluster to be functional and accessible.
+The first on is for the hosted cluster API server, which is exposed through NodePort
 ~~~
 api-server.hypershift-test.adetalhouet.ca.	IN	A	192.168.123.10
 ~~~
 
-Points to one of the workers of the hypershift cluster. This is to provide ingress. Keepalived could be used with HAProxy to setup a VIP instead.
+The second one is to provide ingress. Better solution could be implemented to have keepavlive and load balancing between the workers.
 ~~~
 *.apps.hypershift-test.adetalhouet.ca.	IN	A	192.168.123.20
 ~~~
 
-# Create the hypershift cluster namespace
+Create the hypershift cluster namespace
 
 `oc create ns hypershift-test`
 
-# Create ssh and pull-secret secret
+Create ssh and pull-secret secret so we can provision the bare metal node and access them later on.
 
 ~~~
 export SSH_PUB_KEY=$(cat $HOME/.ssh/id_rsa.pub)
@@ -116,7 +135,7 @@ oc create secret generic pull-secret \
     --type=kubernetes.io/dockerconfigjson
 ~~~
 
-# Create InfraEnv
+Create InfraEnv which will generate the ISO used to boostrap the baremetal nodes.
 
 ~~~
 envsubst <<"EOF" | oc apply -f -
@@ -132,7 +151,7 @@ spec:
 EOF
 ~~~
 
-# Create BareMetalHost consuming the above InfraEnv
+Create BareMetalHost consuming the above InfraEnv. Under the hood, OpenShift will load the ISO and start the bare metal node. The agent part of the ISO will register the node with Assisted Installer.
 
 ~~~
 apiVersion: metal3.io/v1alpha1
@@ -226,14 +245,13 @@ data:
 type: Opaque
 ~~~
 
-# Patch Agents to approve, set role and define installation disk
+Patch the corresponding bare metal node agents to approve, set role and define installation disk
 
 ~~~
  oc get agents -n hypershift-test -o name | xargs oc patch -n hypershift-test -p '{"spec":{"installation_disk_id":"/dev/vda","approved":true,"role":"worker"}}' --type merge
 ~~~
 
-# Create HypershiftDeployment
-This will deploy both the control plane and the workers.
+Finally, create HypershiftDeployment. This will deploy both the control plane and the workers.
 
 ~~~
 apiVersion: cluster.open-cluster-management.io/v1alpha1
