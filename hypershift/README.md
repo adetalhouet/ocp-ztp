@@ -118,11 +118,13 @@ The bellow example uses bind as DNS server.
 
 Two records are required for the hypershift cluster to be functional and accessible.
 The first on is for the hosted cluster API server, which is exposed through NodePort
+This IP is one of the ACM cluster node.
 ~~~
 api-server.hypershift-test.adetalhouet.ca.	IN	A	192.168.123.10
 ~~~
 
 The second one is to provide ingress. Better solution could be implemented to have keepavlive and load balancing between the workers.
+The IP is one of the hypershift cluster's worker node.
 ~~~
 *.apps.hypershift-test.adetalhouet.ca.	IN	A	192.168.123.20
 ~~~
