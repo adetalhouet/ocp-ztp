@@ -1,6 +1,22 @@
 # Setup Hypershift addon and AI for MCE with ACM hub cluster
 
-Start by reading the [documentation](https://access.redhat.com/documentation/en-us/red_hat_advanced_cluster_management_for_kubernetes/2.5/html/clusters/managing-your-clusters#hosted-control-plane-intro)
+Start by reading the official product [documentation](https://access.redhat.com/documentation/en-us/red_hat_advanced_cluster_management_for_kubernetes/2.5/html/clusters/managing-your-clusters#hosted-control-plane-intro)
+
+
+## Table of Contents
+
+<!-- TOC -->
+- [Enable the hypershift related components on the hub cluster](#enable-the-hypershift-related-components-on-the-hub-cluster)
+- [Turn one of the managed clusters into the HyperShift management cluster](#turn-one-of-the-managed-clusters-into-the-hypershift-management-cluster)
+- [Patch the provisioning CR to watch all namespace](#patch-the-provisioning-cr-to-watch-all-namespace)
+- [Create Assisted Installer service in MCE namespace](#create-assisted-installer-service-in-mce-namespace)
+- [Setup DNS entries for hypershift cluster](#setup-dns-entries-for-hypershift-cluster)
+- [Create the hypershift cluster namespace](#create-the-hypershift-cluster-namespace)
+- [Create ssh and pull-secret secret](#create-ssh-and-pull-secret-secret)
+- [Create the InfraEnv](#create-infraenv)
+- [Create BareMetalHost consuming the above InfraEnv](#create-baremetalhost-consuming-the-above-infraenv)
+- [Create HypershiftDeployment](#create-hypershiftdeployment)
+<!-- TOC -->
 
 ## [Enable the hypershift related components on the hub cluster](https://github.com/stolostron/hypershift-deployment-controller/blob/main/docs/provision_hypershift_clusters_by_mce.md#enable-the-hosted-control-planes-related-components-on-the-hub-cluster)
 
@@ -52,13 +68,13 @@ oc create secret generic hypershift-operator-oidc-provider-s3-credentials \
 oc label secret hypershift-operator-oidc-provider-s3-credentials -n local-cluster cluster.open-cluster-management.io/backup=""
 ~~~
 
-## Patch the `provisioning` CR to watch all namespace.
+## Patch the `provisioning` CR to watch all namespace
 
 ~~~
 oc patch provisioning provisioning-configuration --type merge -p '{"spec":{"watchAllNamespaces": true }}'
 ~~~
 
-## Create Assisted Installer service in MCE namespace.
+## Create Assisted Installer service in MCE namespace
 
 ~~~
 export DB_VOLUME_SIZE="10Gi"
@@ -97,7 +113,8 @@ spec:
 EOF
 ~~~
 
-## Setup DNS entries for hypershift cluster. Example with named configuration.
+## Setup DNS entries for hypershift cluster
+The bellow example uses bind as DNS server.
 
 Two records are required for the hypershift cluster to be functional and accessible.
 The first on is for the hosted cluster API server, which is exposed through NodePort
@@ -136,7 +153,9 @@ oc create secret generic pull-secret \
     --type=kubernetes.io/dockerconfigjson
 ~~~
 
-## Create InfraEnv which will generate the ISO used to boostrap the baremetal nodes.
+## Create InfraEnv
+
+This will will generate the ISO used to boostrap the baremetal nodes
 
 ~~~
 envsubst <<"EOF" | oc apply -f -
@@ -253,7 +272,9 @@ Patch the corresponding bare metal node agents to approve, set role and define i
  oc get agents -n hypershift-test -o name | xargs oc patch -n hypershift-test -p '{"spec":{"installation_disk_id":"/dev/vda","approved":true,"role":"worker"}}' --type merge
 ~~~
 
-Finally, create HypershiftDeployment. This will deploy both the control plane and the workers.
+## Create HypershiftDeployment
+
+This will deploy both the control plane and the workers.
 
 ~~~
 apiVersion: cluster.open-cluster-management.io/v1alpha1
