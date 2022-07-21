@@ -2,9 +2,9 @@
 
 Start by reading the [documentation](https://access.redhat.com/documentation/en-us/red_hat_advanced_cluster_management_for_kubernetes/2.5/html/clusters/managing-your-clusters#hosted-control-plane-intro)
 
-[Enable the hypershift related components on the hub cluster](https://github.com/stolostron/hypershift-deployment-controller/blob/main/docs/provision_hypershift_clusters_by_mce.md#enable-the-hosted-control-planes-related-components-on-the-hub-cluster)
+## [Enable the hypershift related components on the hub cluster](https://github.com/stolostron/hypershift-deployment-controller/blob/main/docs/provision_hypershift_clusters_by_mce.md#enable-the-hosted-control-planes-related-components-on-the-hub-cluster)
 
-[Turn one of the managed clusters into the HyperShift management cluster](https://github.com/stolostron/hypershift-deployment-controller/blob/main/docs/provision_hypershift_clusters_by_mce.md#turn-one-of-the-managed-clusters-into-the-hypershift-management-cluster)
+## [Turn one of the managed clusters into the HyperShift management cluster](https://github.com/stolostron/hypershift-deployment-controller/blob/main/docs/provision_hypershift_clusters_by_mce.md#turn-one-of-the-managed-clusters-into-the-hypershift-management-cluster)
 
 In my case, I will use `local-cluster` 
 
@@ -33,7 +33,7 @@ spec:
   storageClassName: openshift-storage.noobaa.io" | oc apply -f -
 ~~~
 
-Bellow is how to create the secret for hypershift consuming the bucket details
+Bellow is how to create the secret for hypershift consuming the bucket credentials.
 
 ~~~
 ACCESS_KEY=$(oc get secret hypershift-operator-oidc-provider-bucket -n local-cluster --template={{.data.AWS_ACCESS_KEY_ID}} | base64 -d)
@@ -52,13 +52,13 @@ oc create secret generic hypershift-operator-oidc-provider-s3-credentials \
 oc label secret hypershift-operator-oidc-provider-s3-credentials -n local-cluster cluster.open-cluster-management.io/backup=""
 ~~~
 
-Patch the `provisioning` CR to watch all namespace.
+## Patch the `provisioning` CR to watch all namespace.
 
 ~~~
 oc patch provisioning provisioning-configuration --type merge -p '{"spec":{"watchAllNamespaces": true }}'
 ~~~
 
-Create Assisted Installer service in MCE namespace.
+## Create Assisted Installer service in MCE namespace.
 
 ~~~
 export DB_VOLUME_SIZE="10Gi"
@@ -97,7 +97,7 @@ spec:
 EOF
 ~~~
 
-Setup DNS entries for hypershift cluster. Example with named configuration.
+## Setup DNS entries for hypershift cluster. Example with named configuration.
 
 Two records are required for the hypershift cluster to be functional and accessible.
 The first on is for the hosted cluster API server, which is exposed through NodePort
@@ -110,11 +110,12 @@ The second one is to provide ingress. Better solution could be implemented to ha
 *.apps.hypershift-test.adetalhouet.ca.	IN	A	192.168.123.20
 ~~~
 
-Create the hypershift cluster namespace
+## Create the hypershift cluster namespace
 
 `oc create ns hypershift-test`
 
-Create ssh and pull-secret secret so we can provision the bare metal node and access them later on.
+## Create ssh and pull-secret secret 
+So we can provision the bare metal node and access them later on.
 
 ~~~
 export SSH_PUB_KEY=$(cat $HOME/.ssh/id_rsa.pub)
@@ -135,7 +136,7 @@ oc create secret generic pull-secret \
     --type=kubernetes.io/dockerconfigjson
 ~~~
 
-Create InfraEnv which will generate the ISO used to boostrap the baremetal nodes.
+## Create InfraEnv which will generate the ISO used to boostrap the baremetal nodes.
 
 ~~~
 envsubst <<"EOF" | oc apply -f -
@@ -151,7 +152,8 @@ spec:
 EOF
 ~~~
 
-Create BareMetalHost consuming the above InfraEnv. Under the hood, OpenShift will load the ISO and start the bare metal node. The agent part of the ISO will register the node with Assisted Installer.
+## Create BareMetalHost consuming the above InfraEnv. 
+Under the hood, OpenShift will load the ISO and start the bare metal node. The agent part of the ISO will register the node with Assisted Installer.
 
 ~~~
 apiVersion: metal3.io/v1alpha1
@@ -325,6 +327,8 @@ spec:
 
 
 # Additional details
+
+https://github.com/openshift/hypershift/blob/main/docs/content/how-to/agent/create-agent-cluster.md
 
 https://hypershift-docs.netlify.app/how-to/agent/create-agent-cluster/
 
