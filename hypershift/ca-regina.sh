@@ -47,7 +47,7 @@ metadata:
 spec:
   online: true
   bmc:
-    address: redfish-virtualmedia+http://10.0.0.250:8000/redfish/v1/Systems/e7be19f6-5b4a-4cb3-9cb3-01d0a25cfdcb
+    address: redfish-virtualmedia+http://10.0.0.250:8000/redfish/v1/Systems/10f4501a-cbbd-43ee-ba1f-3b8f9bc36a53
     credentialsName: ca-regina-node1-secret
     disableCertificateVerification: true
   bootMACAddress: 02:04:00:00:01:01
