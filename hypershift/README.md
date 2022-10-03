@@ -20,6 +20,10 @@ Start by reading the official product [documentation](https://access.redhat.com/
 
 ## [Enable the hypershift related components on the hub cluster](https://github.com/stolostron/hypershift-deployment-controller/blob/main/docs/provision_hypershift_clusters_by_mce.md#enable-the-hosted-control-planes-related-components-on-the-hub-cluster)
 
+~~~
+oc patch mce multiclusterengine --type=merge -p '{"spec":{"overrides":{"components":[{"name":"hypershift-preview","enabled": true}]}}}'
+~~~
+
 ## [Turn one of the managed clusters into the HyperShift management cluster](https://github.com/stolostron/hypershift-deployment-controller/blob/main/docs/provision_hypershift_clusters_by_mce.md#turn-one-of-the-managed-clusters-into-the-hypershift-management-cluster)
 
 In my case, I will use `local-cluster` 
@@ -82,7 +86,7 @@ export FS_VOLUME_SIZE="10Gi"
 export OCP_VERSION="4.10"
 export ARCH="x86_64"
 export OCP_RELEASE_VERSION=$(curl -s https://mirror.openshift.com/pub/openshift-v4/${ARCH}/clients/ocp/latest-${OCP_VERSION}/release.txt | awk '/machine-os / { print $2 }')
-export ISO_URL="https://mirror.openshift.com/pub/openshift-v4/dependencies/rhcos/${OCP_VERSION}/latest/rhcos-${OCP_VERSION}.16-${ARCH}-live.${ARCH}.iso"
+export ISO_URL="https://mirror.openshift.com/pub/openshift-v4/dependencies/rhcos/${OCP_VERSION}/4.10.16/rhcos-${OCP_VERSION}.16-${ARCH}-live.${ARCH}.iso"
 export ROOT_FS_URL="https://mirror.openshift.com/pub/openshift-v4/dependencies/rhcos/${OCP_VERSION}/latest/rhcos-live-rootfs.${ARCH}.img"
 
 envsubst <<"EOF" | oc apply -f -
@@ -274,43 +278,59 @@ Patch the corresponding bare metal node agents to approve, set role and define i
  oc get agents -n hypershift-test -o name | xargs oc patch -n hypershift-test -p '{"spec":{"installation_disk_id":"/dev/vda","approved":true,"role":"worker"}}' --type merge
 ~~~
 
-## Create HypershiftDeployment
+## Create Hypershift Deployment
 
-This will deploy both the control plane and the workers.
-
+### Create role for Cluster API provider
 ~~~
-apiVersion: cluster.open-cluster-management.io/v1alpha1
-kind: HypershiftDeployment
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
 metadata:
-  name: hypershift-test
-  namespace: hypershift-test
+  creationTimestamp: null
+  name: capi-provider-role
+  namespace: ca-regina
+rules:
+- apiGroups:
+  - agent-install.openshift.io
+  resources:
+  - agents
+  verbs:
+  - '*'
+~~~
+
+### Create hosted control plane
+~~~
+---
+apiVersion: hypershift.openshift.io/v1alpha1
+kind: HostedCluster
+metadata:
+  name: 'ca-regina'
+  namespace: 'ca-regina'
+  labels:
+    "cluster.open-cluster-management.io/clusterset": 'default'
 spec:
-  hostingCluster: hypershift-test
-  hostingNamespace: clusters
-  infrastructure:
-    configure: false 
-  hostedClusterSpec:
-    dns:
-      baseDomain: adetalhouet.ca
-    infraID: hypershift-test
-    networking:
-      machineCIDR: ""
-      networkType: OpenShiftSDN
-      podCIDR: 10.132.0.0/14
-      serviceCIDR: 172.32.0.0/16
-    platform:
-      agent:
-        agentNamespace: hypershift-test
-      type: Agent
-    pullSecret:
-      name: pull-secret
-    release:
-      image: quay.io/openshift-release-dev/ocp-release:4.10.16-x86_64
-    services:
+  release:
+    image: quay.io/openshift-release-dev/ocp-release:4.10.26-x86_64
+  pullSecret:
+    name: pull-secret
+  sshKey:
+    name: agent-demo-ssh-key
+  networking:
+    podCIDR: 10.132.0.0/14
+    serviceCIDR: 172.31.0.0/16
+    machineCIDR: 192.168.123.0/24
+    networkType: OpenShiftSDN
+  platform:
+    type: Agent
+    agent:
+      agentNamespace: 'ca-regina'
+  infraID: 'ca-regina'
+  dns:
+    baseDomain: 'adetalhouet.ca'
+  services:
       - service: APIServer
         servicePublishingStrategy:
           nodePort:
-            address: api-server.hypershift-test.adetalhouet.ca
+            address: api-server.ca-regina.adetalhouet.ca
           type: NodePort
       - service: OAuthServer
         servicePublishingStrategy:
@@ -327,25 +347,65 @@ spec:
       - service: OVNSbDb
         servicePublishingStrategy:
           type: Route
-    sshKey:
-      name: agent-demo-ssh-key
-  nodePools:
-  - name: nodepool
-    spec:
-      clusterName: hypershift-test
-      management:
-        autoRepair: false
-        replace:
-          rollingUpdate:
-            maxSurge: 1
-            maxUnavailable: 0
-          strategy: RollingUpdate
-        upgradeType: Replace
-      platform:
-        type: Agent
-      release:
-        image: quay.io/openshift-release-dev/ocp-release:4.10.16-x86_64
-      replicas: 1
+~~~
+
+### Create node pool consuming our bare metal hosts
+~~~
+---
+apiVersion: hypershift.openshift.io/v1alpha1
+kind: NodePool
+metadata:
+  name: 'nodepool-ca-regina-1'
+  namespace: 'ca-regina'
+spec:
+  clusterName: 'ca-regina'
+  replicas: 1
+  management:
+    autoRepair: false
+    upgradeType: InPlace
+  platform:
+    type: Agent
+    agent:
+      agentLabelSelector:
+        matchLabels: {}
+  release:
+    image: quay.io/openshift-release-dev/ocp-release:4.10.26-x86_64
+~~~
+
+### Import cluster in ACM
+~~~
+---
+apiVersion: cluster.open-cluster-management.io/v1
+kind: ManagedCluster
+metadata:
+  labels:
+    cloud: hybrid
+    name: ca-regina
+    cluster.open-cluster-management.io/clusterset: 'default'
+  name: ca-regina
+spec:
+  hubAcceptsClient: true
+---
+apiVersion: agent.open-cluster-management.io/v1
+kind: KlusterletAddonConfig
+metadata:
+  name: 'ca-regina'
+  namespace: 'ca-regina'
+spec:
+  clusterName: 'ca-regina'
+  clusterNamespace: 'ca-regina'
+  clusterLabels:
+    cloud: ai-hypershift
+  applicationManager:
+    enabled: true
+  policyController:
+    enabled: true
+  searchCollector:
+    enabled: true
+  certPolicyController:
+    enabled: true
+  iamPolicyController:
+    enabled: true
 ~~~
 
 

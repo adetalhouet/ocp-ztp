@@ -241,8 +241,12 @@ After=syslog.target
 Type=simple
 ExecStart=/usr/local/bin/sushy-emulator --config /etc/sushy.conf
 StandardOutput=syslog
-StandardError=syslog' > /usr/lib/systemd/system/sushy.service
+StandardError=syslog
+
+[Install]
+WantedBy=multi-user.target' > /usr/lib/systemd/system/sushy.service
 systemctl start sushy
+systemctl enable --now sushy.service
 ~~~
 
 Finally, let's start the built-in firewall and allow traffic on port 8000.
