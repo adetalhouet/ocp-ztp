@@ -10,7 +10,7 @@ spec:
   clusterDeploymentRef:
     name: ca-montreal
   imageSetRef:
-    name: img4.9.23-x86-64-appsub
+    name: openshift-v4.11.9
   # apiVIP: ""
   # ingressVIP: ""
   networking:
@@ -24,4 +24,4 @@ spec:
   provisionRequirements:
     controlPlaneAgents: 1
     # workerAgents: 2
-  sshPublicKey: "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABgQCXBlG+5FRGFwLAxhk88Nce10VwN7W0N9+aBKzoXWx/Y3h5eJmwdy3apo+kBxEbf+GW01u9EFSV3MZR+uaufvT0t0fF1zyFV2pB+HNVBPoOKs7ZGaqNzWi4uR0REBH+rIeoY7eR528kSbxHZNWjzxB6jc/PCmF7gM/MWnNFieZKLBwoLpC3rOEorF6Q5GRj0c7EOYn0sdK149i1BUhJFWEJfxXSS5pkArIa4TCW2hgO06TN41UpCPa17KDG+rxrrgs0i9J//RTke/w4PnddlY0ETASZXgNbDOJwldTGlmQTjzrjrBMgzf950xLnHiB2qX7SgZL2xrC4pO3i2RZezeIPujO3RAQjP+LAkUgG41Ui0d8v2dkZ53/OSfTXx3GB2eIUTGLVK2iK3uKzKys178dwuSvFON60YPi/n/TX8va+XaJzc4JImFNFQW4wF+RlAc3v1hNGOKQhGODtaDZ7oU0BDd4ddXe8ownN7W0LSWufxyJ9x8jH+DiUAI1jDHvhtH0= root@adetalhouet-t640-1"
+  sshPublicKey: "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABgQDFS0S+jf5OW7CDuwuJO46IpeunNc19oyXlRQwR6tBx67EPXAt3LxB/BMbyr8+MLMIErzaIUSvG70yk34cB4jbXrs8cbwSdxGPro3ZZqu9qT8+ILhEXtok6uUBG8OKlhIqrAm6Iq3hH1Kbgwj/72B9eaKIpNHzvrZSM/UNAYZzNvENuBGeWuO1kfxnhWmzp+eh+8vTPcYdLzJKv+BOQBxz6T8SI5By0TfvAvVS2xMmhMRMs1TBDLUBgzZgd06X0ghSaOimz4aVbmqI4WwClIy8ZiXhL/j1IkSF97qNo26yb/yYnyk+BqqrsOQIEQQcfzY+skpHQ1JiPjPVYHsujhgctFgwCR0/KKw2QcqOK67est5gDW3vaf/zIDhRnPdT2IhJQTQNEepRjKfHF2EgGIMSU4TosJ5ygx+q0oZ5ITcFHSiIK3aoOt2QXZPY+Dtork5zYbE2M3PLrgRrT1VW1eTH6v5GYjUDq95mwcKYBirSvd3QuUbrGjFQuxfCZlceUui0= adetalhouet@joatmon.localdomain"
