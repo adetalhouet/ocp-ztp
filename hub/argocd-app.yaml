@@ -1,0 +1,17 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: acm-assisted-installer-hub-config
+  namespace: openshift-gitops
+spec:
+  destination:
+    namespace: open-cluster-management
+    server: 'https://kubernetes.default.svc'
+  project: default
+  source:
+    path: hub
+    repoURL: 'https://github.com/adetalhouet/ocp-ztp/'
+    targetRevision: HEAD
+  syncPolicy:
+    automated:
+      selfHeal: true
