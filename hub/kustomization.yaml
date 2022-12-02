@@ -5,4 +5,4 @@ kind: Kustomization
 resources:
   - 00-clusterimageset.yaml
   - 02-assistedserviceconfig.yaml
-  - 03-assisted-deployment-ssh-private-key.yaml
+  # - 03-assisted-deployment-ssh-private-key.yaml
