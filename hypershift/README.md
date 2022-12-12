@@ -194,46 +194,8 @@ metadata:
 spec:
   online: true
   bmc:
-    address: redfish-virtualmedia+http://10.0.0.250:8000/redfish/v1/Systems/d72df842-5dc0-4d9b-a512-1cc94d448d50
+    address: redfish-virtualmedia+http://192.168.0.190:8000/redfish/v1/Systems/a59aa864-afa2-4363-a8c2-eac2edb63234
     credentialsName: ca-montreal-node1-secret
-    disableCertificateVerification: true
-  bootMACAddress: 02:04:00:00:01:01
-  automatedCleaningMode: disabled
----
-apiVersion: metal3.io/v1alpha1
-kind: BareMetalHost
-metadata:
-  name: ca-montreal-node2
-  namespace: hypershift-test
-  labels:
-    infraenvs.agent-install.openshift.io: "hypershift-test"
-  annotations:
-    inspect.metal3.io: disabled
-    bmac.agent-install.openshift.io/hostname: "ca-montreal-node2"
-spec:
-  online: true
-  bmc:
-    address: redfish-virtualmedia+http://10.0.0.250:8000/redfish/v1/Systems/05ec24af-9599-43f6-a4c2-a95e1f9372e0
-    credentialsName: ca-montreal-node2-secret
-    disableCertificateVerification: true
-  bootMACAddress: 02:04:00:00:01:02
-  automatedCleaningMode: disabled
----
-apiVersion: metal3.io/v1alpha1
-kind: BareMetalHost
-metadata:
-  name: ca-montreal-node3
-  namespace: hypershift-test
-  labels:
-    infraenvs.agent-install.openshift.io: "hypershift-test"
-  annotations:
-    inspect.metal3.io: disabled
-    bmac.agent-install.openshift.io/hostname: "ca-montreal-node3"
-spec:
-  online: true
-  bmc:
-    address: redfish-virtualmedia+http://10.0.0.250:8000/redfish/v1/Systems/d03f44c0-2431-4f91-b813-f6af0b8588b1
-    credentialsName: ca-montreal-node3-secret
     disableCertificateVerification: true
   bootMACAddress: 02:04:00:00:01:03
   automatedCleaningMode: disabled
@@ -243,28 +205,6 @@ apiVersion: v1
 kind: Secret
 metadata:
   name: ca-montreal-node1-secret
-  namespace: hypershift-test
-data:
-  password: Ym9iCg==
-  username: Ym9iCg==
-type: Opaque
----
-# dummy secret - it is not used by required by assisted service and bare metal operator
-apiVersion: v1
-kind: Secret
-metadata:
-  name: ca-montreal-node2-secret
-  namespace: hypershift-test
-data:
-  password: Ym9iCg==
-  username: Ym9iCg==
-type: Opaque
----
-# dummy secret - it is not used by required by assisted service and bare metal operator
-apiVersion: v1
-kind: Secret
-metadata:
-  name: ca-montreal-node3-secret
   namespace: hypershift-test
 data:
   password: Ym9iCg==
