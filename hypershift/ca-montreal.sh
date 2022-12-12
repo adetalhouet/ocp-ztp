@@ -52,7 +52,7 @@ metadata:
 spec:
   online: true
   bmc:
-    address: redfish-virtualmedia+http://192.168.0.190:8000/redfish/v1/Systems/a59aa864-afa2-4363-a8c2-eac2edb63234
+    address: redfish-virtualmedia+http://192.168.0.190:8000/redfish/v1/Systems/d4e63915-eebf-4948-b1b3-542a11a4286a
     credentialsName: ca-montreal-node1-secret
     disableCertificateVerification: true
   bootMACAddress: 02:04:00:00:01:03
@@ -157,8 +157,7 @@ spec:
     type: Agent
     agent:
       agentLabelSelector:
-        matchLabels:
-          agentclusterinstalls.extensions.hive.openshift.io/location: Montreal
+        matchLabels: {}
   release:
     image: quay.io/openshift-release-dev/ocp-release:4.10.26-x86_64
 ---
