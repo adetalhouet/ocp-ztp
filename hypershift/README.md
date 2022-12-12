@@ -184,18 +184,18 @@ Under the hood, OpenShift will load the ISO and start the bare metal node. The a
 apiVersion: metal3.io/v1alpha1
 kind: BareMetalHost
 metadata:
-  name: ca-regina-node1
+  name: ca-montreal-node1
   namespace: hypershift-test
   labels:
     infraenvs.agent-install.openshift.io: "hypershift-test"
   annotations:
     inspect.metal3.io: disabled
-    bmac.agent-install.openshift.io/hostname: "ca-regina-node1"
+    bmac.agent-install.openshift.io/hostname: "ca-montreal-node1"
 spec:
   online: true
   bmc:
     address: redfish-virtualmedia+http://10.0.0.250:8000/redfish/v1/Systems/d72df842-5dc0-4d9b-a512-1cc94d448d50
-    credentialsName: ca-regina-node1-secret
+    credentialsName: ca-montreal-node1-secret
     disableCertificateVerification: true
   bootMACAddress: 02:04:00:00:01:01
   automatedCleaningMode: disabled
@@ -203,18 +203,18 @@ spec:
 apiVersion: metal3.io/v1alpha1
 kind: BareMetalHost
 metadata:
-  name: ca-regina-node2
+  name: ca-montreal-node2
   namespace: hypershift-test
   labels:
     infraenvs.agent-install.openshift.io: "hypershift-test"
   annotations:
     inspect.metal3.io: disabled
-    bmac.agent-install.openshift.io/hostname: "ca-regina-node2"
+    bmac.agent-install.openshift.io/hostname: "ca-montreal-node2"
 spec:
   online: true
   bmc:
     address: redfish-virtualmedia+http://10.0.0.250:8000/redfish/v1/Systems/05ec24af-9599-43f6-a4c2-a95e1f9372e0
-    credentialsName: ca-regina-node2-secret
+    credentialsName: ca-montreal-node2-secret
     disableCertificateVerification: true
   bootMACAddress: 02:04:00:00:01:02
   automatedCleaningMode: disabled
@@ -222,18 +222,18 @@ spec:
 apiVersion: metal3.io/v1alpha1
 kind: BareMetalHost
 metadata:
-  name: ca-regina-node3
+  name: ca-montreal-node3
   namespace: hypershift-test
   labels:
     infraenvs.agent-install.openshift.io: "hypershift-test"
   annotations:
     inspect.metal3.io: disabled
-    bmac.agent-install.openshift.io/hostname: "ca-regina-node3"
+    bmac.agent-install.openshift.io/hostname: "ca-montreal-node3"
 spec:
   online: true
   bmc:
     address: redfish-virtualmedia+http://10.0.0.250:8000/redfish/v1/Systems/d03f44c0-2431-4f91-b813-f6af0b8588b1
-    credentialsName: ca-regina-node3-secret
+    credentialsName: ca-montreal-node3-secret
     disableCertificateVerification: true
   bootMACAddress: 02:04:00:00:01:03
   automatedCleaningMode: disabled
@@ -242,7 +242,7 @@ spec:
 apiVersion: v1
 kind: Secret
 metadata:
-  name: ca-regina-node1-secret
+  name: ca-montreal-node1-secret
   namespace: hypershift-test
 data:
   password: Ym9iCg==
@@ -253,7 +253,7 @@ type: Opaque
 apiVersion: v1
 kind: Secret
 metadata:
-  name: ca-regina-node2-secret
+  name: ca-montreal-node2-secret
   namespace: hypershift-test
 data:
   password: Ym9iCg==
@@ -264,7 +264,7 @@ type: Opaque
 apiVersion: v1
 kind: Secret
 metadata:
-  name: ca-regina-node3-secret
+  name: ca-montreal-node3-secret
   namespace: hypershift-test
 data:
   password: Ym9iCg==
@@ -287,7 +287,7 @@ kind: Role
 metadata:
   creationTimestamp: null
   name: capi-provider-role
-  namespace: ca-regina
+  namespace: ca-montreal
 rules:
 - apiGroups:
   - agent-install.openshift.io
@@ -303,50 +303,61 @@ rules:
 apiVersion: hypershift.openshift.io/v1alpha1
 kind: HostedCluster
 metadata:
-  name: 'ca-regina'
-  namespace: 'ca-regina'
+  name: 'ca-montreal'
+  namespace: 'ca-montreal'
   labels:
     "cluster.open-cluster-management.io/clusterset": 'default'
 spec:
+  fips: false
   release:
-    image: quay.io/openshift-release-dev/ocp-release:4.10.26-x86_64
+    image: 'quay.io/openshift-release-dev/ocp-release:4.10.26-x86_64'
+  dns:
+    baseDomain: adetalhouet.ca
+  controllerAvailabilityPolicy: SingleReplica
+  infraID: ca-montreal
+  etcd:
+    managed:
+      storage:
+        persistentVolume:
+          size: 4Gi
+        type: PersistentVolume
+    managementType: Managed
+  infrastructureAvailabilityPolicy: SingleReplica
+  platform:
+    agent:
+      agentNamespace: ca-montreal
+    type: Agent
+  networking:
+    clusterNetwork:
+      - cidr: 10.132.0.0/14
+    machineNetwork:
+      - cidr: 192.168.123.0/24
+    networkType: OVNKubernetes
+    serviceNetwork:
+      - cidr: 172.31.0.0/16
+  clusterID: af5d43f0-0936-49cf-88a3-79736034adb2
   pullSecret:
     name: pull-secret
+  issuerURL: 'https://kubernetes.default.svc'
   sshKey:
     name: agent-demo-ssh-key
-  networking:
-    podCIDR: 10.132.0.0/14
-    serviceCIDR: 172.31.0.0/16
-    machineCIDR: 192.168.123.0/24
-    networkType: OpenShiftSDN
-  platform:
-    type: Agent
-    agent:
-      agentNamespace: 'ca-regina'
-  infraID: 'ca-regina'
-  dns:
-    baseDomain: 'adetalhouet.ca'
+  autoscaling: {}
+  olmCatalogPlacement: management
   services:
-      - service: APIServer
-        servicePublishingStrategy:
-          nodePort:
-            address: api-server.ca-regina.adetalhouet.ca
-          type: NodePort
-      - service: OAuthServer
-        servicePublishingStrategy:
-          type: Route
-      - service: OIDC
-        servicePublishingStrategy:
-          type: None
-      - service: Konnectivity
-        servicePublishingStrategy:
-          type: Route
-      - service: Ignition
-        servicePublishingStrategy:
-          type: Route
-      - service: OVNSbDb
-        servicePublishingStrategy:
-          type: Route
+    - service: APIServer
+      servicePublishingStrategy:
+        nodePort:
+          address: api-server.ca-montreal.adetalhouet.ca
+        type: NodePort
+    - service: OAuthServer
+      servicePublishingStrategy:
+        type: Route
+    - service: Konnectivity
+      servicePublishingStrategy:
+        type: Route
+    - service: Ignition
+      servicePublishingStrategy:
+        type: Route
 ~~~
 
 ### Create node pool consuming our bare metal hosts
@@ -355,10 +366,10 @@ spec:
 apiVersion: hypershift.openshift.io/v1alpha1
 kind: NodePool
 metadata:
-  name: 'nodepool-ca-regina-1'
-  namespace: 'ca-regina'
+  name: 'nodepool-ca-montreal-1'
+  namespace: 'ca-montreal'
 spec:
-  clusterName: 'ca-regina'
+  clusterName: 'ca-montreal'
   replicas: 1
   management:
     autoRepair: false
@@ -380,20 +391,20 @@ kind: ManagedCluster
 metadata:
   labels:
     cloud: hybrid
-    name: ca-regina
+    name: ca-montreal
     cluster.open-cluster-management.io/clusterset: 'default'
-  name: ca-regina
+  name: ca-montreal
 spec:
   hubAcceptsClient: true
 ---
 apiVersion: agent.open-cluster-management.io/v1
 kind: KlusterletAddonConfig
 metadata:
-  name: 'ca-regina'
-  namespace: 'ca-regina'
+  name: 'ca-montreal'
+  namespace: 'ca-montreal'
 spec:
-  clusterName: 'ca-regina'
-  clusterNamespace: 'ca-regina'
+  clusterName: 'ca-montreal'
+  clusterNamespace: 'ca-montreal'
   clusterLabels:
     cloud: ai-hypershift
   applicationManager:

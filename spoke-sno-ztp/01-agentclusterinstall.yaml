@@ -6,6 +6,8 @@ metadata:
   namespace: ca-montreal
   label:
     agentclusterinstalls.extensions.hive.openshift.io/location: Montreal
+  annotations:
+    agent-install.openshift.io/install-config-overrides: '{"networking":{"networkType":"OVNKubernetes"}}'
 spec:
   clusterDeploymentRef:
     name: ca-montreal

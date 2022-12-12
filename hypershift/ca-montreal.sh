@@ -47,10 +47,10 @@ metadata:
 spec:
   online: true
   bmc:
-    address: redfish-virtualmedia+http://10.0.0.250:8000/redfish/v1/Systems/10f4501a-cbbd-43ee-ba1f-3b8f9bc36a53
+    address: redfish-virtualmedia+http://192.168.0.190:8000/redfish/v1/Systems/a59aa864-afa2-4363-a8c2-eac2edb63234
     credentialsName: ca-montreal-node1-secret
     disableCertificateVerification: true
-  bootMACAddress: 02:04:00:00:01:01
+  bootMACAddress: 02:04:00:00:01:03
   automatedCleaningMode: disabled
 ---
 # dummy secret - it is not used by required by assisted service and bare metal operator
@@ -87,45 +87,56 @@ metadata:
   labels:
     "cluster.open-cluster-management.io/clusterset": 'default'
 spec:
+  fips: false
   release:
-    image: quay.io/openshift-release-dev/ocp-release:4.10.26-x86_64
+    image: 'quay.io/openshift-release-dev/ocp-release:4.10.26-x86_64'
+  dns:
+    baseDomain: adetalhouet.ca
+  controllerAvailabilityPolicy: SingleReplica
+  infraID: ca-montreal
+  etcd:
+    managed:
+      storage:
+        persistentVolume:
+          size: 4Gi
+        type: PersistentVolume
+    managementType: Managed
+  infrastructureAvailabilityPolicy: SingleReplica
+  platform:
+    agent:
+      agentNamespace: ca-montreal
+    type: Agent
+  networking:
+    clusterNetwork:
+      - cidr: 10.132.0.0/14
+    machineNetwork:
+      - cidr: 192.168.123.0/24
+    networkType: OVNKubernetes
+    serviceNetwork:
+      - cidr: 172.31.0.0/16
+  clusterID: af5d43f0-0936-49cf-88a3-79736034adb2
   pullSecret:
     name: pull-secret
+  issuerURL: 'https://kubernetes.default.svc'
   sshKey:
     name: agent-demo-ssh-key
-  networking:
-    podCIDR: 10.132.0.0/14
-    serviceCIDR: 172.31.0.0/16
-    machineCIDR: 192.168.123.0/24
-    networkType: OpenShiftSDN
-  platform:
-    type: Agent
-    agent:
-      agentNamespace: 'ca-montreal'
-  infraID: 'ca-montreal'
-  dns:
-    baseDomain: 'adetalhouet.ca'
+  autoscaling: {}
+  olmCatalogPlacement: management
   services:
-      - service: APIServer
-        servicePublishingStrategy:
-          nodePort:
-            address: api-server.ca-montreal.adetalhouet.ca
-          type: NodePort
-      - service: OAuthServer
-        servicePublishingStrategy:
-          type: Route
-      - service: OIDC
-        servicePublishingStrategy:
-          type: None
-      - service: Konnectivity
-        servicePublishingStrategy:
-          type: Route
-      - service: Ignition
-        servicePublishingStrategy:
-          type: Route
-      - service: OVNSbDb
-        servicePublishingStrategy:
-          type: Route
+    - service: APIServer
+      servicePublishingStrategy:
+        nodePort:
+          address: api-server.ca-montreal.adetalhouet.ca
+        type: NodePort
+    - service: OAuthServer
+      servicePublishingStrategy:
+        type: Route
+    - service: Konnectivity
+      servicePublishingStrategy:
+        type: Route
+    - service: Ignition
+      servicePublishingStrategy:
+        type: Route
 ---
 apiVersion: hypershift.openshift.io/v1alpha1
 kind: NodePool
