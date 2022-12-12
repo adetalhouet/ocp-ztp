@@ -26,10 +26,15 @@ kind: InfraEnv
 metadata:
   name: ca-montreal
   namespace: ca-montreal
+  labels:
+    agentclusterinstalls.extensions.hive.openshift.io/location: Montreal
 spec:
   pullSecretRef:
     name: pull-secret
   sshAuthorizedKey: ${SSH_PUB_KEY}
+  agentLabelSelector:
+    matchLabels:
+      agentclusterinstalls.extensions.hive.openshift.io/location: Montreal
 EOF
 
 echo "
@@ -114,7 +119,6 @@ spec:
     networkType: OVNKubernetes
     serviceNetwork:
       - cidr: 172.31.0.0/16
-  clusterID: af5d43f0-0936-49cf-88a3-79736034adb2
   pullSecret:
     name: pull-secret
   issuerURL: 'https://kubernetes.default.svc'
@@ -153,7 +157,8 @@ spec:
     type: Agent
     agent:
       agentLabelSelector:
-        matchLabels: {}
+        matchLabels:
+          agentclusterinstalls.extensions.hive.openshift.io/location: Montreal
   release:
     image: quay.io/openshift-release-dev/ocp-release:4.10.26-x86_64
 ---
