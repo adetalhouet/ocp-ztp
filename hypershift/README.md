@@ -124,18 +124,18 @@ Two records are required for the hypershift cluster to be functional and accessi
 The first on is for the hosted cluster API server, which is exposed through NodePort
 This IP is one of the ACM cluster node.
 ~~~
-api-server.hypershift-test.adetalhouet.ca.	IN	A	192.168.123.10
+api-server.ca-montreal.adetalhouet.ca.	IN	A	192.168.123.10
 ~~~
 
 The second one is to provide ingress. Better solution could be implemented to have keepavlive and load balancing between the workers.
 The IP is one of the hypershift cluster's worker node.
 ~~~
-*.apps.hypershift-test.adetalhouet.ca.	IN	A	192.168.123.20
+*.apps.ca-montreal.adetalhouet.ca.	IN	A	192.168.123.20
 ~~~
 
 ## Create the hypershift cluster namespace
 
-`oc create ns hypershift-test`
+`oc create ns ca-montreal`
 
 ## Create ssh and pull-secret secret 
 So we can provision the bare metal node and access them later on.
@@ -147,14 +147,14 @@ apiVersion: v1
 kind: Secret
 metadata:
   name: agent-demo-ssh-key
-  namespace: hypershift-test
+  namespace: ca-montreal
 stringData:
   id_rsa.pub: ${SSH_PUB_KEY}
 EOF
 
 DOCKER_CONFIG_JSON=`oc extract secret/pull-secret -n openshift-config --to=-`
 oc create secret generic pull-secret \
-    -n hypershift-test \
+    -n ca-montreal \
     --from-literal=.dockerconfigjson="$DOCKER_CONFIG_JSON" \
     --type=kubernetes.io/dockerconfigjson
 ~~~
@@ -168,8 +168,8 @@ envsubst <<"EOF" | oc apply -f -
 apiVersion: agent-install.openshift.io/v1beta1
 kind: InfraEnv
 metadata:
-  name: hypershift-test
-  namespace: hypershift-test
+  name: ca-montreal
+  namespace: ca-montreal
 spec:
   pullSecretRef:
     name: pull-secret
@@ -185,9 +185,9 @@ apiVersion: metal3.io/v1alpha1
 kind: BareMetalHost
 metadata:
   name: ca-montreal-node1
-  namespace: hypershift-test
+  namespace: ca-montreal
   labels:
-    infraenvs.agent-install.openshift.io: "hypershift-test"
+    infraenvs.agent-install.openshift.io: "ca-montreal"
   annotations:
     inspect.metal3.io: disabled
     bmac.agent-install.openshift.io/hostname: "ca-montreal-node1"
@@ -205,7 +205,7 @@ apiVersion: v1
 kind: Secret
 metadata:
   name: ca-montreal-node1-secret
-  namespace: hypershift-test
+  namespace: ca-montreal
 data:
   password: Ym9iCg==
   username: Ym9iCg==
@@ -215,7 +215,7 @@ type: Opaque
 Patch the corresponding bare metal node agents to approve, set role and define installation disk
 
 ~~~
- oc get agents -n hypershift-test -o name | xargs oc patch -n hypershift-test -p '{"spec":{"installation_disk_id":"/dev/vda","approved":true,"role":"worker"}}' --type merge
+ oc get agents -n ca-montreal -o name | xargs oc patch -n ca-montreal -p '{"spec":{"installation_disk_id":"/dev/vda","approved":true,"role":"worker"}}' --type merge
 ~~~
 
 ## Create Hypershift Deployment
