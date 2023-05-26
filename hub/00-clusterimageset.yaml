@@ -6,3 +6,11 @@ metadata:
   namespace: open-cluster-management
 spec:
   releaseImage: quay.io/openshift-release-dev/ocp-release:4.11.9-x86_64
+---
+apiVersion: hive.openshift.io/v1
+kind: ClusterImageSet
+metadata:
+  name: openshift-v4.13.1
+  namespace: open-cluster-management
+spec:
+  releaseImage: quay.io/openshift-release-dev/ocp-release:4.13.1-x86_64
