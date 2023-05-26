@@ -13,7 +13,7 @@ spec:
   - clusterName: "ca-montreal"
     networkType: "OVNKubernetes"
     installConfigOverrides:  "{\"capabilities\":{\"baselineCapabilitySet\": \"None\", \"additionalEnabledCapabilities\": [ \"marketplace\", \"NodeTuning\" ] }}"
-    extraManifestPath: extra-manifest
+    extraManifestPath: manifests
     extraManifests:
       filter:
         inclusionDefault: exclude
