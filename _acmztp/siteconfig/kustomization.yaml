@@ -3,5 +3,5 @@ kind: Kustomization
 
 generators:
 - ca-montreal.yaml
-- ca-montreal-sealed-secret.yaml
+# - ca-montreal-sealed-secret.yaml
 - ca-montreal-bmc-secret.yaml
