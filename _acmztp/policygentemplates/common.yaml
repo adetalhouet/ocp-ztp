@@ -1,0 +1,22 @@
+---
+apiVersion: ran.openshift.io/v1
+kind: PolicyGenTemplate
+metadata:
+  name: "common"
+  namespace: "ztp-common"
+spec:
+  bindingRules:
+    # These policies will correspond to all clusters with this label:
+    common: "true"
+  sourceFiles:
+    # Create operators policies that will be installed in all clusters
+
+    # Enable Web Terminal
+    - fileName: web-terminal/namespace.yaml
+      policyName: "web-terminal-policy"
+    - fileName: web-terminal/operator-group.yaml
+      policyName: "web-terminal-policy"
+    - fileName: web-terminal/subscription.yaml
+      policyName: "web-terminal-policy"
+    - fileName: web-terminal/status.yaml
+      policyName: "web-terminal-policy"

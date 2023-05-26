@@ -1,0 +1,5 @@
+generators:
+- common.yaml
+
+resources:
+- ns.yaml
