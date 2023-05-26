@@ -30,8 +30,8 @@ spec:
       - "172.30.0.0/16"
     machineNetwork:
       - cidr: "192.168.123.0/24"
-    additionalNTPSources:
-      - 2.rhel.pool.ntp.org
+    # additionalNTPSources:
+    #   - 2.rhel.pool.ntp.org
     # cpuPartitioningMode: AllNodes
     nodes:
       - hostName: "ca-montreal-node1"
