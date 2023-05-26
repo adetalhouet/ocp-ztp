@@ -36,7 +36,7 @@ spec:
     nodes:
       - hostName: "ca-montreal-node1"
         role: "master"
-        bmcAddress: "redfish-virtualmedia+http://192.168.1.170:8000/redfish/v1/Systems/cd5535cc-a1b3-42f4-8938-0c344bb0646f"
+        bmcAddress: "redfish-virtualmedia+http://192.168.1.170:8000/redfish/v1/Systems/181d3e23-d417-40a9-88cf-1e01d7fb75fe"
         bmcCredentialsName:
           name: "bmh-secret"
         bootMACAddress: "02:04:00:00:01:03"
