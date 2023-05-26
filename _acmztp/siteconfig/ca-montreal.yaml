@@ -14,12 +14,12 @@ spec:
     networkType: "OVNKubernetes"
     installConfigOverrides:  "{\"capabilities\":{\"baselineCapabilitySet\": \"None\", \"additionalEnabledCapabilities\": [ \"marketplace\", \"NodeTuning\" ] }}"
     extraManifestPath: extra-manifest
-    extraManifests:
-      filter:
-        inclusionDefault: exclude
-        include:
-          - enable-crun-master.yaml
-          - enable-crun-worker.yaml
+    # extraManifests:
+    #   filter:
+    #     inclusionDefault: exclude
+    #     include:
+    #       - enable-crun-master.yaml
+    #       - enable-crun-worker.yaml
     clusterLabels:
       sites : "ca-montreal"
       common: "true"
