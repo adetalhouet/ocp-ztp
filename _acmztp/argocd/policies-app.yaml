@@ -14,7 +14,7 @@ spec:
     namespace: policies-sub
   project: policy-app-project
   source:
-    path: ztp/gitops-subscriptions/argocd/example/policygentemplates
+    path: _acmztp/policygentemplates
     repoURL: https://github.com/adetalhouet/ocp-ztp
     targetRevision: master
     # uncomment the below plugin if you will be adding the plugin binaries in the same repo->dir where
