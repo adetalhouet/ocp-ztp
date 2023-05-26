@@ -19,7 +19,7 @@ spec:
         inclusionDefault: exclude
         include:
           - enable-crun-master.yaml
-          - enable-crun-wroker.yaml
+          - enable-crun-worker.yaml
     clusterLabels:
       sites : "ca-montreal"
       common: "true"
