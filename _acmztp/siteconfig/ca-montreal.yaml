@@ -7,7 +7,7 @@ spec:
   baseDomain: "adetalhouet.ca"
   pullSecretRef:
     name: "assisted-deployment-pull-secret"
-  clusterImageSetNameRef: "openshift-v4.13.1"
+  clusterImageSetNameRef: "openshift-v4.11.9"
   sshPublicKey: "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABgQDFS0S+jf5OW7CDuwuJO46IpeunNc19oyXlRQwR6tBx67EPXAt3LxB/BMbyr8+MLMIErzaIUSvG70yk34cB4jbXrs8cbwSdxGPro3ZZqu9qT8+ILhEXtok6uUBG8OKlhIqrAm6Iq3hH1Kbgwj/72B9eaKIpNHzvrZSM/UNAYZzNvENuBGeWuO1kfxnhWmzp+eh+8vTPcYdLzJKv+BOQBxz6T8SI5By0TfvAvVS2xMmhMRMs1TBDLUBgzZgd06X0ghSaOimz4aVbmqI4WwClIy8ZiXhL/j1IkSF97qNo26yb/yYnyk+BqqrsOQIEQQcfzY+skpHQ1JiPjPVYHsujhgctFgwCR0/KKw2QcqOK67est5gDW3vaf/zIDhRnPdT2IhJQTQNEepRjKfHF2EgGIMSU4TosJ5ygx+q0oZ5ITcFHSiIK3aoOt2QXZPY+Dtork5zYbE2M3PLrgRrT1VW1eTH6v5GYjUDq95mwcKYBirSvd3QuUbrGjFQuxfCZlceUui0= adetalhouet@joatmon.localdomain"
   clusters:
   - clusterName: "ca-montreal"
