@@ -8,3 +8,5 @@ resources:
 generators:
  - ca-montreal.yaml
 
+
+ - siteConfig-ca-montreal.yaml
