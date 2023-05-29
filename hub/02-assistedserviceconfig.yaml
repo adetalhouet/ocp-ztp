@@ -4,8 +4,6 @@ kind: ConfigMap
 metadata:
   name: assisted-service-config
   namespace: multicluster-engine
-  annotations:
-    unsupported.agent-install.openshift.io/assisted-service-configmap: ""
 data:
   LOG_LEVEL: "debug"
   HW_VALIDATOR_REQUIREMENTS: |
@@ -46,6 +44,8 @@ kind: AgentServiceConfig
 metadata:
   name: agent
   namespace: open-cluster-management
+  annotations:
+    unsupported.agent-install.openshift.io/assisted-service-configmap: "assisted-service-config"
 spec:
   databaseStorage:
     accessModes:
