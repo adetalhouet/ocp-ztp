@@ -2,7 +2,7 @@ apiVersion: ran.openshift.io/v1
 kind: SiteConfig
 metadata:
   name: ca-montreal
-  namespace: ca-montreal
+  namespace: ca-montrealv
   labels: {}
 spec:
   pullSecretRef:
