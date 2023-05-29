@@ -26,12 +26,12 @@ data:
       "sno": {
         "cpu_cores": 8,
         "ram_mib": 16384,
-        "disk_size_gb": 100,
+        "disk_size_gb": 100
       },
       "edge-worker": {
         "cpu_cores": 2,
         "ram_mib": 8192,
-        "disk_size_gb": 15,
+        "disk_size_gb": 15
       }
     }]
 ---
