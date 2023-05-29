@@ -7,3 +7,5 @@ resources:
 
 generators:
  - ca-montreal.yaml
+
+ - siteConfig-54338184-be14-4e1c-9782-78278cc8dfed.yaml
