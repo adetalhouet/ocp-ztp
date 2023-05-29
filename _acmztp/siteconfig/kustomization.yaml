@@ -6,4 +6,4 @@ resources:
 - ca-montreal-bmc-secret.yaml
 
 generators:
-# - ca-montreal.yaml
+ - ca-montreal.yaml
